@@ -16,3 +16,4 @@ Once logged in, users will be able to create their own posts to be displayed on 
 Admin users will be able to delete messages that may be inappropriate or harmful to the site.
 
 ### Requirements
+Be able to comment on a post
