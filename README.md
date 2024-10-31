@@ -18,3 +18,4 @@ Admin users will be able to delete messages that may be inappropriate or harmful
 ### Requirements
 Be able to comment on a post
 Be able to login to my personal account
+Be able to delete posts and comments
