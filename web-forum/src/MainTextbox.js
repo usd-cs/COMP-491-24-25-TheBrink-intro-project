@@ -1,5 +1,5 @@
 import React, { useRef, useEffect } from 'react';
-import './styles.css';
+import './App.css';
 
 function MainTextbox() {
   const textAreaRef = useRef(null);
@@ -26,7 +26,7 @@ function MainTextbox() {
   }, []);
 
   return (
-    <textarea className="main-textbox" ref={textAreaRef} placeholder="Enter text here..." />
+    <textarea id="makePost" className="main-textbox" ref={textAreaRef} placeholder="Enter text here..." />
   );
 }
 
