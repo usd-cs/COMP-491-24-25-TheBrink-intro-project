@@ -31,7 +31,7 @@ function PostButton({ refreshPosts }) {
 
   return (
     <div>
-      <button onClick={handleClick}>Send Post</button>
+      <button class="button" onClick={handleClick}>Send Post</button>
     </div>
   );
 }
