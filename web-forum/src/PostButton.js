@@ -9,11 +9,14 @@ function PostButton() {
 
         // Get the value of the textarea
         let value = textarea.value;
+
+        // Display the value in an alert
+        alert("Textarea value: " + value);
     };
     
     return (
     <div>
-      <button onClick={handleClick}>Send Post</button>
+      <button class="button" onClick={handleClick}>Send Post</button>
     </div>
     )
 }

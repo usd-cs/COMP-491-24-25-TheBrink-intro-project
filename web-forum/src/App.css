@@ -24,8 +24,24 @@
   color: white;
 }
 
+.button {
+  background-color: #04AA6D; /* Green */
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.button:hover{
+  background-color: #075d3d;
+  transform: 0.7s;
+}
+
 .Make-post {
-  background-color: #6796ab;
   position: absolute;
   flex-direction: column;
   bottom: 0;
@@ -42,4 +58,6 @@
 
 .main-textbox {
   font-family: 'Arial', sans-serif;
+  max-width: 20;
+  max-height: 40;
 }

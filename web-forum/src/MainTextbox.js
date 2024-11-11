@@ -1,33 +1,35 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import './App.css';
 
 function MainTextbox() {
+  const [value, setValue] = useState('');
   const textAreaRef = useRef(null);
 
   useEffect(() => {
-    const adjustHeight = () => {
-      if (textAreaRef.current) {
-        textAreaRef.current.style.height = 'auto'; // Reset height to calculate scrollHeight
-        textAreaRef.current.style.height = `${textAreaRef.current.scrollHeight}px`;
-      }
-    };
-
-    adjustHeight(); // Initial height adjustment
-
     if (textAreaRef.current) {
-      textAreaRef.current.addEventListener('input', adjustHeight);
+      textAreaRef.current.style.height = 'auto'; // Reset height to calculate scrollHeight
+      textAreaRef.current.style.height = `${textAreaRef.current.scrollHeight}px`;
     }
+  }, [value]);
 
-    return () => {
-      if (textAreaRef.current) {
-        textAreaRef.current.removeEventListener('input', adjustHeight);
-      }
-    };
-  }, []);
+    // adjustHeight(); // Initial height adjustment
+
+  const handleChange = (event) => {
+    setValue(event.target.value);
+  };
 
   return (
-    <textarea id="makePost" className="main-textbox" ref={textAreaRef} placeholder="Enter text here..." />
+    <textarea
+      ref={textAreaRef}
+      value={value}
+      onChange={handleChange}
+    />
   );
-}
+  };
+
+  // return (
+  //   <textarea id="makePost" className="main-textbox" ref={textAreaRef} placeholder="Enter text here..." />
+  // );
+
 
 export default MainTextbox;
