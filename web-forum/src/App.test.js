@@ -31,14 +31,11 @@ describe('Post Button', () => {
     
   // Currently having issues when running this test. Can't mock "handleClick" correctly.
   test('calls onClick handler when clicked', () => {
-    jest.mock('./PostButton' , () => {
-      return {
-        leaveBreadcrumb: jest.fn(),
-      };
-    });
-    handleClick.mockReturnValue("New Post")
+    const instance = new PostButton()
+    const spy = jest.spyOn(instance, "textarea.value")
+    spy.mockReturnValue("New Post")
 
-    render(<PostButton label="Send Post" onClick={handleClick} />);
+    render(<PostButton label="Send Post" />);
     const postButton = screen.getByText("Send Post");
     fireEvent.click(postButton);
     expect(handleClick).toHaveBeenCalledTimes(1);
