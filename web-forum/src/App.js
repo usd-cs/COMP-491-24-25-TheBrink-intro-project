@@ -5,6 +5,18 @@ import PostList from './PostList';
 
 function App() {
   const [posts, setPosts] = useState([]);
+  const [isLoggedIn, setIsLoggedIn] = useState(false); // Track login status
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+
+//Simulate API call for login
+const login = async () => {
+  if (username === 'user' && password === 'password') {
+    setIsLoggedIn(true); // Simulate successful login
+  } else {
+    alert('Invalid credentials');
+  }
+};
 
   // Define fetchPosts inside App
   const fetchPosts = async () => {
@@ -28,18 +40,49 @@ function App() {
 
   return (
     <div>
-      {/* Add a banner here */}
-      <div className="App-banner">
-        <h1>Welcome to The Brink!</h1>
+      {/* Banner with login/profile on the left */}
+      <div className="App-banner" style={{ display: 'flex', alignItems: 'center', backgroundColor: '#282c34', color: 'white', padding: '20px' }}>
+        {/* Login/Profile Section on the left */}
+        <div style={{ marginRight: 'auto', display: 'flex', alignItems: 'center' }}>
+          {!isLoggedIn ? (
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+              <h3>Login</h3>
+              <input 
+                type="text" 
+                placeholder="Username" 
+                value={username} 
+                onChange={(e) => setUsername(e.target.value)} 
+                style={{ marginBottom: '5px' }}
+              />
+              <input 
+                type="password" 
+                placeholder="Password" 
+                value={password} 
+                onChange={(e) => setPassword(e.target.value)} 
+                style={{ marginBottom: '5px' }}
+              />
+              <button onClick={login}>Login</button>
+            </div>
+          ) : (
+            <div>
+              <h3>Welcome, {username}!</h3>
+              <button onClick={() => setIsLoggedIn(false)}>Logout</button>
+            </div>
+          )}
+        </div>
+
+        {/* Main Banner Content */}
+        <div style={{ textAlign: 'center', flexGrow: 1 }}>
+          <h1>Welcome to The Brink!</h1>
+        </div>
       </div>
 
+      {/* Main App Content */}
       <header className="App-header">
-        {/* Display the list of posts */}
         <PostList posts={posts} />
       </header>
       <header className="Make-post">
         <MainTextbox />
-        {/* Pass fetchPosts as a prop to PostButton */}
         <PostButton refreshPosts={fetchPosts} />
       </header>
     </div>
