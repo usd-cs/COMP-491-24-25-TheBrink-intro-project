@@ -28,6 +28,11 @@ function App() {
 
   return (
     <div>
+      {/* Add a banner here */}
+      <div className="App-banner">
+        <h1>Welcome to The Brink!</h1>
+      </div>
+
       <header className="App-header">
         {/* Display the list of posts */}
         <PostList posts={posts} />
