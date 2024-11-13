@@ -54,12 +54,8 @@ function App() {
   return (
     <div className ="app-container">
       <header className="App-header">
-        <MainTextbox/>
-        <PostButton refreshPosts={fetchPosts}/>
         {/* Display the list of posts */}
         {/*<PostList posts={posts} />*/}
-      </header>
-
 
       <div className ="content">
       <PostList  posts ={posts} onSelectPost={fetchComments}/>
@@ -71,7 +67,13 @@ function App() {
         />
       )}
       </div>
+
+      <div className='make-post'>
+        <MainTextbox/>
+        <PostButton refreshPosts={fetchPosts}/>
       </div>
+      </header>
+    </div>
   );
 }
 
