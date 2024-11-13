@@ -2,6 +2,10 @@ import React from 'react';
  
 
 function PostList({ posts }) {
+  function showComments(){
+    alert("comments button clicked");
+  };
+  
   return (
     <div className="post-list">
       <h2>Posts</h2>
@@ -10,7 +14,7 @@ function PostList({ posts }) {
             <br />
             <small>{new Date('December 17, 1995 03:24:00').toLocaleString()}</small>
             <br />
-            <img src = 'C:\Users\tiern\Senior Project\COMP-491-24-25-TheBrink-intro-project\web-forum\src\comment_icon.png' alt = 'comments'/>
+            <button onClick = {showComments}> Comments </button>
       </li>
       <ul>
         {posts.map((post) => (

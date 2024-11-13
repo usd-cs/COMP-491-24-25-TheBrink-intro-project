@@ -28,10 +28,15 @@ function App() {
 
   const fetchComments = async (postId) => {
     try {
-      const response = await fetch('http://localhost:5001/api/posts/${postID}/comments');
+      const response = await fetch('http://localhost:5001/api/posts/comments');
       if(response.ok){
         const data = await response.json();
-        setComments(data);
+        setComments((prevComments) => {
+          const updatedComments = Object.assign({}, prevComments);
+          updatedComments[postId] = data;
+          return updatedComments;
+        });
+
         setSelectedPostId(postId);
       }else {
       console.error('Failed to fetch comments');
