@@ -61,3 +61,9 @@
 .main-textbox {
   font-family: 'Arial', sans-serif;
 }
+
+.banner {
+  background-color: #f0f0f0;
+  padding: 10px;
+  text-align: center;
+}
