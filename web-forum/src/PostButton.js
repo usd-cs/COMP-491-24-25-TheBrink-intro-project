@@ -37,7 +37,7 @@ function PostButton({ refreshPosts, isLoggedIn }) {
   return (
     <div>
       {isLoggedIn ? (
-        <button className="button" onClick={handleClick}>
+        <button className="button" onClick={handleClick} >
           Send Post
         </button>
       ) : (

@@ -12,6 +12,7 @@ const Banner = ({ message, isLoggedIn, username, setUsername, password, setPassw
               <h3>Login</h3>
               <input
                 type="text"
+                id="username"
                 placeholder="Username"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
@@ -24,6 +25,7 @@ const Banner = ({ message, isLoggedIn, username, setUsername, password, setPassw
               />
               <input
                 type="password"
+                id="password"
                 placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
