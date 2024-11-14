@@ -2,6 +2,7 @@ import { render, screen } from '@testing-library/react';
 import App from './App';
 import MainTextbox from './MainTextbox';
 import PostButton from './PostButton';
+import PostList from './PostList';
 import userEvent from '@testing-library/user-event';
 import { fireEvent } from '@testing-library/react';
 import { handleClick , refreshPosts } from './PostButton'
@@ -30,6 +31,22 @@ describe('Post Button', () => {
   })
     
   // Currently having issues when running this test. Can't mock "handleClick" correctly.
+  // test('calls onClick handler when clicked', () => {
+  //   render(<PostButton label="Send Post" />);
+  //   const postButton = screen.getByRole('button');
+  //   fireEvent.click(postButton);
+  //   expect(handleClick).toHaveBeenCalledTimes(1);
+  // })
+});
+
+describe('View Post Button', () => {
+  test('renders gray "View Post" button', () => {
+    render(<PostList />)
+    const postListButton = screen.getByRole('button');
+    expect(postListButton).toBeInTheDocument();
+  })
+    
+  // Currently having issues when running this test. Can't mock "handleClick" correctly.
   test('calls onClick handler when clicked', () => {
     render(<PostButton label="Send Post" />);
     const postButton = screen.getByText("Send Post");
@@ -37,4 +54,21 @@ describe('Post Button', () => {
     fireEvent.click(postButton);
     expect(handleClick).toHaveBeenCalledTimes(1);
   })
+});
+
+describe('Login Banner', () => {
+  test('renders gray "View Post" button', () => {
+    render(<PostList />)
+    const postListButton = screen.getByRole('button');
+    expect(postListButton).toBeInTheDocument();
+  })
+    
+  // Currently having issues when running this test. Can't mock "handleClick" correctly.
+  // test('calls onClick handler when clicked', () => {
+  //   render(<PostButton label="Send Post" />);
+  //   const postButton = screen.getByText("Send Post");
+  //   jest.mock()
+  //   fireEvent.click(postButton);
+  //   expect(handleClick).toHaveBeenCalledTimes(1);
+  // })
 });

@@ -17,6 +17,11 @@ function PostList({ posts }) {
             <button onClick = {showComments}> Comments </button>
       </li>
       <ul>
+          <li key={0}>
+            <strong>User {"X"}:</strong> {"Demo Post"}
+            <br />
+            <small>{new Date("MM/DD/YYYY 00:00:00").toLocaleString()}</small>
+          </li>
         {posts.map((post) => (
           <li key={post.post_id}>
             <strong>User {post.user_id}:</strong> {post.content}
