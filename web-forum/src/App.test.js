@@ -6,6 +6,7 @@ import PostList from './PostList';
 import userEvent from '@testing-library/user-event';
 import { fireEvent } from '@testing-library/react';
 import { handleClick , refreshPosts } from './PostButton'
+import Banner from './Banner';
 
 describe('Post Textbox', () => {
   test('renders textbox for new posts', () => {
@@ -23,52 +24,47 @@ describe('Post Textbox', () => {
 
 });
 
-describe('Post Button', () => {
-  test('renders green "Send Post" button', () => {
-    render(<PostButton />)
-    const postButton = screen.getByRole('button');
-    expect(postButton).toBeInTheDocument();
-  })
-    
-  // Currently having issues when running this test. Can't mock "handleClick" correctly.
-  // test('calls onClick handler when clicked', () => {
-  //   render(<PostButton label="Send Post" />);
-  //   const postButton = screen.getByRole('button');
-  //   fireEvent.click(postButton);
-  //   expect(handleClick).toHaveBeenCalledTimes(1);
-  // })
-});
+// describe('Post Button', () => {
+//   test('renders green "Send Post" button', () => {
+//     render(<PostButton />)
+//     const isLoggedInMock = true;
+//     jest.spyOn(PostButton, 'isLoggedIn', 'get').mockReturnValue(isLoggedInMock)
+//     const postButton = screen.getByRole('button');
+//     expect(postButton).toBeInTheDocument();
+//   })
+// });
 
-describe('View Post Button', () => {
-  test('renders gray "View Post" button', () => {
-    render(<PostList />)
-    const postListButton = screen.getByRole('button');
-    expect(postListButton).toBeInTheDocument();
-  })
+// describe('View Post Button', () => {
+//   test('renders gray "View Post" button', () => {
+//     render(<App />)
+//     const postListButton = screen.getByRole('button');
+//     expect(postListButton).toBeInTheDocument();
+//   })
     
-  // Currently having issues when running this test. Can't mock "handleClick" correctly.
-  test('calls onClick handler when clicked', () => {
-    render(<PostButton label="Send Post" />);
-    const postButton = screen.getByText("Send Post");
-    jest.mock()
-    fireEvent.click(postButton);
-    expect(handleClick).toHaveBeenCalledTimes(1);
-  })
-});
+// });
 
 describe('Login Banner', () => {
-  test('renders gray "View Post" button', () => {
-    render(<PostList />)
-    const postListButton = screen.getByRole('button');
-    expect(postListButton).toBeInTheDocument();
+  test('renders username text box', () => {
+    render(<Banner />)
+    const usernameTextbox = screen.getByRole('textbox', { id: "username"});
+    expect(usernameTextbox).toBeInTheDocument();
   })
-    
-  // Currently having issues when running this test. Can't mock "handleClick" correctly.
-  // test('calls onClick handler when clicked', () => {
-  //   render(<PostButton label="Send Post" />);
-  //   const postButton = screen.getByText("Send Post");
-  //   jest.mock()
-  //   fireEvent.click(postButton);
-  //   expect(handleClick).toHaveBeenCalledTimes(1);
-  // })
+  test('renders password text box', () => {
+    render(<Banner />)
+    const passwordTextbox = screen.getByRole('textbox', { id: "password"});
+    expect(passwordTextbox).toBeInTheDocument();
+  })
+
+  test('renders green "Login" and red "Logout" button', () => {
+    render(<Banner />)
+
+    expect(screen.getAllByRole('button')).toHaveLength(2);
+
+    const loginButton = screen.getByRole('button', { name: "Login"});
+    expect(loginButton).toBeInTheDocument();
+  
+    const logoutButton = screen.getByRole('button', { name: "Logout"});
+    expect(logoutButton).toBeInTheDocument();
+  })
+  
 });

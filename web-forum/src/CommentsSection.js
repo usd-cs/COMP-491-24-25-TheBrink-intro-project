@@ -1,7 +1,7 @@
 import React from 'react';
 import SendCommentButton from './SendCommentButton';
 
-function CommentsSection({ comments, postId, refreshComments }) {
+function CommentsSection({ comments, postId, refreshComments, isLoggedIn }) {
   return (
     <div className="comments-section">
       <h3>Comments for Post ID {postId}</h3>
@@ -22,8 +22,14 @@ function CommentsSection({ comments, postId, refreshComments }) {
       ) : (
         <p>No comments yet</p>
       )}
-      <textarea id="makeComment" placeholder="Add a comment..." />
-      <SendCommentButton postId={postId} refreshComments={refreshComments} />
+      {isLoggedIn ? (
+        <>
+          <textarea id="makeComment" placeholder="Add a comment..." />
+          <SendCommentButton postId={postId} refreshComments={refreshComments} />
+        </>
+      ) : (
+        <p style={{ color: 'red' }}>Login required to add comments.</p>
+      )}
     </div>
   );
 }
