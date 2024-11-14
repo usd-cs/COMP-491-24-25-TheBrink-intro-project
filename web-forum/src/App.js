@@ -1,12 +1,4 @@
-import React, { useState, useEffect } from 'react';
-<<<<<<< Updated upstream
-import MainTextbox from './MainTextbox';
-import PostButton from './PostButton';
-import PostList from './PostList';
-
-function App() {
-  const [posts, setPosts] = useState([]);
-=======
+import React, { useState, useEffect, useCallback } from 'react';
 import './App.css';
 
 function App() {
@@ -16,9 +8,8 @@ function App() {
   const [postContent, setPostContent] = useState('');
 
   const apiUrl = process.env.REACT_APP_API_URL;
->>>>>>> Stashed changes
 
-  const fetchPosts = async () => {
+  const fetchPosts = useCallback(async () => {
     try {
       const response = await fetch(`${apiUrl}/api/posts`);
       if (response.ok) {
@@ -30,49 +21,11 @@ function App() {
     } catch (error) {
       console.error('Error:', error);
     }
-  };
+  }, [apiUrl]); // Memoize using apiUrl as a dependency
 
-<<<<<<< Updated upstream
-  // Fetch posts when component mounts
-=======
-  const handleCreatePost = async () => {
-    const textarea = document.getElementById('newPostContent');
-    const content = textarea.value.trim(); // Get the content from the textarea and trim spaces
-  
-    if (!content) {
-      alert('Post content cannot be empty!');
-      return;
-    }
-  
-    try {
-      const response = await fetch(`${apiUrl}/api/posts`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          user_id: 1, // Replace with the actual user ID if required
-          content,
-        }),
-      });
-  
-      if (response.ok) {
-        console.log('Post created successfully');
-        textarea.value = ''; // Clear the textarea
-        fetchPosts(); // Refresh the posts list
-      } else {
-        const errorText = await response.text();
-        console.error('Failed to create post. Response:', errorText);
-        alert('Failed to create post. Check console for details.');
-      }
-    } catch (error) {
-      console.error('Error creating post:', error);
-    }
-  };
-  
   const fetchComments = async (postId) => {
     try {
-      const response = await fetch(`http://localhost:5001/api/posts/${postId}/comments`);
+      const response = await fetch(`${apiUrl}/api/posts/${postId}/comments`);
       if (response.ok) {
         const data = await response.json();
         setComments(data);
@@ -90,8 +43,7 @@ function App() {
   };
 
   const handleAddComment = async () => {
-    const textarea = document.getElementById('makeComment');
-    const content = textarea.value.trim();
+    const content = document.getElementById('makeComment').value.trim();
 
     if (!content) {
       alert('Comment cannot be empty!');
@@ -99,20 +51,20 @@ function App() {
     }
 
     try {
-      const response = await fetch(`http://localhost:5001/api/posts/${selectedPost.post_id}/comments`, {
+      const response = await fetch(`${apiUrl}/api/posts/${selectedPost.post_id}/comments`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          user_id: 1, // Replace with actual user_id if needed
+          user_id: 1,
           content,
         }),
       });
 
       if (response.ok) {
         console.log('Comment added successfully');
-        textarea.value = '';
+        document.getElementById('makeComment').value = '';
         fetchComments(selectedPost.post_id);
       } else {
         const errorText = await response.text();
@@ -124,7 +76,7 @@ function App() {
     }
   };
 
-  const handleAddPost = async () => {
+  const handleCreatePost = async () => {
     if (!postContent.trim()) {
       alert('Post content cannot be empty!');
       return;
@@ -137,7 +89,7 @@ function App() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          user_id: 1, // Replace with actual user_id if needed
+          user_id: 1,
           content: postContent.trim(),
         }),
       });
@@ -152,31 +104,19 @@ function App() {
         alert('Failed to add post. Check console for details.');
       }
     } catch (error) {
-      console.error('Error:', error);
+      console.error('Error creating post:', error);
     }
   };
 
->>>>>>> Stashed changes
   useEffect(() => {
-    fetchPosts();
-  }, []);
+    fetchPosts(); // Safe to include due to memoization
+  }, [fetchPosts]); // Include fetchPosts in the dependency array
 
   return (
-<<<<<<< Updated upstream
-    <div>
-      <header className="App-header">
-        {/* Display the list of posts */}
-        <PostList posts={posts} />
-      </header>
-      <header className="Make-post">
-        <MainTextbox />
-        {/* Pass fetchPosts as a prop to PostButton */}
-        <PostButton refreshPosts={fetchPosts} />
-=======
     <div className="app-container">
       <header className="App-header">
         <div className="layout-container">
-          <div className="empty-section"></div> {/* Empty space above the text box */}
+          <div className="empty-section"></div>
           <div className="posts-list">
             {posts.map((post) => (
               <div key={post.post_id} className="post">
@@ -206,6 +146,16 @@ function App() {
                   {new Date(selectedPost.created_at).toLocaleTimeString()}
                 </em>
               </small>
+              <div className="add-comment-section">
+                <textarea
+                  id="makeComment"
+                  placeholder="Add a comment..."
+                  className="comment-textbox"
+                ></textarea>
+                <button className="comment-button" onClick={handleAddComment}>
+                  Comment
+                </button>
+              </div>
               <div className="comments-section">
                 <h4>Comments</h4>
                 <ul>
@@ -224,30 +174,24 @@ function App() {
                     <li>No comments yet.</li>
                   )}
                 </ul>
-                <textarea id="makeComment" placeholder="Add a comment"></textarea>
-                <button onClick={handleAddComment}>Comment</button>
               </div>
             </div>
           )}
         </div>
->>>>>>> Stashed changes
       </header>
       <div className="make-post">
         <textarea
           className="main-textbox"
           placeholder="Write a new post..."
-          id="newPostContent"
+          value={postContent}
+          onChange={(e) => setPostContent(e.target.value)}
         ></textarea>
-        <button
-          className="post-button"
-          onClick={handleCreatePost} // Define this function to handle post creation
-        >
+        <button className="post-button" onClick={handleCreatePost}>
           Post
         </button>
       </div>
     </div>
   );
-  
 }
 
 export default App;
