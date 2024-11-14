@@ -1,35 +1,32 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import './App.css';
-import Banner from'./Banner.js';
-
+import Banner from './Banner.js';
 
 function App() {
   const [posts, setPosts] = useState([]);
   const [selectedPost, setSelectedPost] = useState(null);
   const [comments, setComments] = useState([]);
   const [postContent, setPostContent] = useState('');
-  //Login Constants
   const [isLoggedIn, setIsLoggedIn] = useState(false); // Track login status
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
-
   const apiUrl = process.env.REACT_APP_API_URL;
 
-  //Simulate API call for login
-const login = async () => {
-  if (username === 'user' && password === 'password') {
-    setIsLoggedIn(true); // Simulate successful login
-  } else {
-    alert('Invalid credentials');
-  }
- };
- 
- const logout = () => {
-  setIsLoggedIn(false);
-  setUsername('');
-  setPassword('');
-};
+  const login = async () => {
+    if (username === 'user' && password === 'password') {
+      setIsLoggedIn(true); // Simulate successful login
+    } else {
+      alert('Invalid credentials');
+    }
+  };
+
+  const logout = () => {
+    setIsLoggedIn(false);
+    setUsername('');
+    setPassword('');
+  };
+
   const fetchPosts = useCallback(async () => {
     try {
       const response = await fetch(`${apiUrl}/api/posts`);
@@ -42,7 +39,7 @@ const login = async () => {
     } catch (error) {
       console.error('Error:', error);
     }
-  }, [apiUrl]); // Memoize using apiUrl as a dependency
+  }, [apiUrl]);
 
   const fetchComments = async (postId) => {
     try {
@@ -63,6 +60,41 @@ const login = async () => {
     fetchComments(post.post_id);
   };
 
+  const handleDeletePost = async (postId) => {
+    try {
+      const response = await fetch(`${apiUrl}/api/posts/${postId}`, {
+        method: 'DELETE',
+      });
+
+      if (response.ok) {
+        console.log('Post deleted successfully');
+        fetchPosts(); // Refresh the posts list
+      } else {
+        console.error('Failed to delete post');
+      }
+    } catch (error) {
+      console.error('Error deleting post:', error);
+    }
+  };
+
+  const handleDeleteComment = async (commentId) => {
+    try {
+      const response = await fetch(`${apiUrl}/api/comments/${commentId}`, {
+        method: 'DELETE',
+      });
+  
+      if (response.ok) {
+        console.log('Comment deleted successfully');
+        fetchComments(selectedPost.post_id); // Refresh the comments list
+      } else {
+        console.error('Failed to delete comment');
+      }
+    } catch (error) {
+      console.error('Error deleting comment:', error);
+    }
+  };
+  
+
   const handleAddComment = async () => {
     const content = document.getElementById('makeComment').value.trim();
 
@@ -70,14 +102,6 @@ const login = async () => {
       alert('Comment cannot be empty!');
       return;
     }
-
-    //Logout function
-    const logout = () => {
-      setIsLoggedIn(false);
-      setUsername('');
-      setPassword('');
-     };
-     
 
     try {
       const response = await fetch(`${apiUrl}/api/posts/${selectedPost.post_id}/comments`, {
@@ -138,12 +162,12 @@ const login = async () => {
   };
 
   useEffect(() => {
-    fetchPosts(); // Safe to include due to memoization
-  }, [fetchPosts]); // Include fetchPosts in the dependency array
+    fetchPosts();
+  }, [fetchPosts]);
 
   return (
     <div className="app-container">
-        {/* Banner Component with Login/Profile */}
+      {/* Banner Component with Login/Profile */}
       <Banner
         message="Welcome to The Brink!"
         isLoggedIn={isLoggedIn}
@@ -152,7 +176,7 @@ const login = async () => {
         password={password}
         setPassword={setPassword}
         login={login}
-        logout={logout} // Ensure logout is passed here
+        logout={logout}
       />
 
       <header className="App-header">
@@ -172,7 +196,7 @@ const login = async () => {
                 </small>
                 <br />
                 <button onClick={() => handleViewPost(post)}>View Post</button>
-                {/* Add an <hr> line below each post except the last one */}
+                <button onClick={() => handleDeletePost(post.post_id)}>Delete Post</button>
                 {index !== posts.length - 1 && <hr className="post-separator" />}
               </div>
             ))}
@@ -212,8 +236,11 @@ const login = async () => {
                           {new Date(comment.created_at).toLocaleDateString()} at{' '}
                           {new Date(comment.created_at).toLocaleTimeString()}
                         </small>
+                        {/* Add Delete Button */}
+                        <button onClick={() => handleDeleteComment(comment.comment_id)}>
+                          Delete Comment
+                        </button>
                       </li>
-                      {/* Add an <hr> line below each comment except the last one */}
                       {index !== comments.length - 1 && <hr className="comment-separator" />}
                     </React.Fragment>
                   ))
