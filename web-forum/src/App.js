@@ -41,6 +41,13 @@ function App() {
     }
   };  
 
+  const adjustToPacificTime = (timestamp) => {
+    const date = new Date(timestamp);
+    const offset = 60 * 60 * 1000; // 1 hour in milliseconds
+    return new Date(date.getTime() - offset); // Adjust by subtracting 1 hour
+  };
+  
+
   const logout = () => {
     if (!isLoggedIn) {
       alert('No one is logged in. Please log in first.');
@@ -250,8 +257,8 @@ function App() {
                 </p>
                 <small>
                   <em>
-                    Posted on {new Date(post.created_at).toLocaleDateString()} at{' '}
-                    {new Date(post.created_at).toLocaleTimeString()}
+                    Posted on {new Intl.DateTimeFormat('en-US', { timeZone: 'America/Los_Angeles', dateStyle: 'medium' }).format(adjustToPacificTime(post.created_at))} at{' '}
+                    {new Intl.DateTimeFormat('en-US', { timeZone: 'America/Los_Angeles', timeStyle: 'short' }).format(adjustToPacificTime(post.created_at))}
                   </em>
                 </small>
                 <br />
@@ -304,8 +311,8 @@ function App() {
                         <strong>{comment.username}:</strong> {comment.content}
                         <br />
                         <small>
-                          {new Date(comment.created_at).toLocaleDateString()} at{' '}
-                          {new Date(comment.created_at).toLocaleTimeString()}
+                          Posted on {adjustToPacificTime(comment.created_at).toLocaleDateString()} at{' '}
+                          {adjustToPacificTime(comment.created_at).toLocaleTimeString()}
                         </small>
                         {isLoggedIn && (
                           <button
