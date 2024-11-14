@@ -112,6 +112,100 @@ function App() {
     fetchPosts(); // Safe to include due to memoization
   }, [fetchPosts]); // Include fetchPosts in the dependency array
 
+
+
+  /*Psuedocode if there is an admin*/
+  if(login == admin){
+    return (
+      <div className="app-container">
+        <header className="App-header">
+          <div className="layout-container">
+            <div className="empty-section"></div>
+            <div className="posts-list">
+              {posts.map((post, index) => (
+                <div key={post.post_id} className="post">
+                  <p>
+                    <strong>User {post.user_id}:</strong> {post.content}
+                  </p>
+                  <small>
+                    <em>
+                      Posted on {new Date(post.created_at).toLocaleDateString()} at{' '}
+                      {new Date(post.created_at).toLocaleTimeString()}
+                    </em>
+                  </small>
+                  <br />
+                  <button onClick={() => handleViewPost(post)}>View Post</button>
+                  <button onClick={() => handleDeletePost(post)}>Delete Post</button>
+                  {/* Add an <hr> line below each post except the last one */}
+                  {index !== posts.length - 1 && <hr className="post-separator" />}
+                </div>
+              ))}
+            </div>
+            {selectedPost && (
+              <div className="post-comments-container">
+                <h3>Selected Post</h3>
+                <p>
+                  <strong>User {selectedPost.user_id}:</strong> {selectedPost.content}
+                </p>
+                <small>
+                  <em>
+                    Posted on {new Date(selectedPost.created_at).toLocaleDateString()} at{' '}
+                    {new Date(selectedPost.created_at).toLocaleTimeString()}
+                  </em>
+                </small>
+                <div className="add-comment-section">
+                  <textarea
+                    id="makeComment"
+                    placeholder="Add a comment..."
+                    className="comment-textbox"
+                  ></textarea>
+                  <button className="comment-button" onClick={handleAddComment}>
+                    Comment
+                  </button>
+                  <button onClick ={handleDeleteComment}>Delete Comment</button>
+                </div>
+                <div className="comments-section">
+                <h4>Comments</h4>
+                <ul>
+                  {comments.length > 0 ? (
+                    comments.map((comment, index) => (
+                      <React.Fragment key={comment.comment_id}>
+                        <li>
+                          <strong>User {comment.user_id}:</strong> {comment.content}
+                          <br />
+                          <small>
+                            {new Date(comment.created_at).toLocaleDateString()} at{' '}
+                            {new Date(comment.created_at).toLocaleTimeString()}
+                          </small>
+                        </li>
+                        {/* Add an <hr> line below each comment except the last one */}
+                        {index !== comments.length - 1 && <hr className="comment-separator" />}
+                      </React.Fragment>
+                    ))
+                  ) : (
+                    <li>No comments yet.</li>
+                  )}
+                </ul>
+              </div>
+              </div>
+            )}
+          </div>
+        </header>
+        <div className="make-post">
+          <textarea
+            className="main-textbox"
+            placeholder="Write a new post..."
+            value={postContent}
+            onChange={(e) => setPostContent(e.target.value)}
+          ></textarea>
+          <button className="post-button" onClick={handleCreatePost}>
+            Post
+          </button>
+        </div>
+      </div>
+    );
+  }
+  {/*if logged in user is not admin*/}
   return (
     <div className="app-container">
       <header className="App-header">

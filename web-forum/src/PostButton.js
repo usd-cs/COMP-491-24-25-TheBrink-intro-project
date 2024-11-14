@@ -28,12 +28,20 @@ function PostButton({ refreshPosts }) {
       console.error('Error:', error);
     }
   };
-
-  return (
-    <div>
-      <button class="button" onClick={handleClick}>Send Post</button>
-    </div>
-  );
+  if(logged in ){
+        return (
+          <div>
+            <button class="button" onClick={handleClick}>Send Post</button>
+          </div>
+        );
+      }
+      //if not logged in 
+      return (
+        <div>
+          <button class="button">Cannot Send Post</button>
+        </div>
+      );
+    
 }
 
 export default PostButton;
