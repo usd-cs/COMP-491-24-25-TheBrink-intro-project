@@ -1,6 +1,6 @@
 import React from 'react';
 
-function PostButton({ refreshPosts }) {
+function PostButton() {
   const handleClick = async () => {
     const textarea = document.getElementById("makePost");
     const value = textarea.value;
@@ -20,7 +20,6 @@ function PostButton({ refreshPosts }) {
       if (response.ok) {
         console.log('Post sent successfully');
         textarea.value = '';  // Clear textarea
-        refreshPosts();       // Refresh post list
       } else {
         console.log('Failed to send post');
       }

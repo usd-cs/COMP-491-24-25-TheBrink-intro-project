@@ -4,7 +4,7 @@ import MainTextbox from './MainTextbox';
 import PostButton from './PostButton';
 import userEvent from '@testing-library/user-event';
 import { fireEvent } from '@testing-library/react';
-import { handleClick } from './PostButton'
+import { handleClick , refreshPosts } from './PostButton'
 
 describe('Post Textbox', () => {
   test('renders textbox for new posts', () => {
@@ -31,12 +31,9 @@ describe('Post Button', () => {
     
   // Currently having issues when running this test. Can't mock "handleClick" correctly.
   test('calls onClick handler when clicked', () => {
-    const instance = new PostButton()
-    const spy = jest.spyOn(instance, "textarea.value")
-    spy.mockReturnValue("New Post")
-
     render(<PostButton label="Send Post" />);
     const postButton = screen.getByText("Send Post");
+    jest.mock()
     fireEvent.click(postButton);
     expect(handleClick).toHaveBeenCalledTimes(1);
   })
