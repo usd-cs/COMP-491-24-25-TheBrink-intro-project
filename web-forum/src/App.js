@@ -16,7 +16,7 @@ function App() {
 
   const login = async () => {
     try {
-      const response = await fetch('http://localhost:5001/api/login', {
+      const response = await fetch(`${apiUrl}/api/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -33,12 +33,13 @@ function App() {
   
       setIsLoggedIn(true);
       setUsername(data.username);
-      setUserType(data.userType); // Store userType for permissions
+      setUserType(data.userType);
+      localStorage.setItem('token', data.token); // Save token to localStorage
     } catch (error) {
       console.error('Error during login:', error);
       alert('An error occurred during login. Please try again.');
     }
-  };
+  };  
 
   const logout = () => {
     if (!isLoggedIn) {
@@ -56,14 +57,14 @@ function App() {
       const response = await fetch(`${apiUrl}/api/posts`);
       if (response.ok) {
         const data = await response.json();
-        setPosts(data);
+        setPosts(data); // Update state with fetched posts
       } else {
         console.error('Failed to fetch posts');
       }
     } catch (error) {
-      console.error('Error:', error);
+      console.error('Error fetching posts:', error);
     }
-  }, [apiUrl]);
+  }, [apiUrl]);  
 
   const fetchComments = async (postId) => {
     try {
@@ -89,120 +90,141 @@ function App() {
       alert('Only admins can delete posts.');
       return;
     }
-
+  
     try {
-      const response = await fetch(`http://localhost:5001/api/posts/${postId}`, {
+      const response = await fetch(`${apiUrl}/api/posts/${postId}`, {
         method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`, // Pass token from localStorage
+        },
       });
-
+  
       if (response.ok) {
         console.log('Post deleted successfully');
-        fetchPosts(); // Refresh the posts list
+        await fetchPosts(); // Refresh the posts list
+        if (selectedPost && selectedPost.post_id === postId) {
+          setSelectedPost(null); // Clear the selected post
+          setComments([]); // Clear the comments
+        }
       } else {
-        console.error('Failed to delete post');
+        const errorText = await response.text();
+        console.error('Failed to delete post:', errorText);
+        alert(`Failed to delete post: ${errorText}`);
       }
     } catch (error) {
       console.error('Error deleting post:', error);
+      alert('Error deleting post.');
     }
   };
-
+  
+  
   const handleDeleteComment = async (commentId) => {
+    if (userType !== 'admin') {
+      alert('Only admins can delete comments.');
+      return;
+    }
+  
     try {
       const response = await fetch(`${apiUrl}/api/comments/${commentId}`, {
         method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`, // Pass token from localStorage
+        },
       });
-
+  
       if (response.ok) {
         console.log('Comment deleted successfully');
-        fetchComments(selectedPost.post_id); // Refresh the comments list
+        await fetchComments(selectedPost.post_id); // Refresh comments list
       } else {
-        console.error('Failed to delete comment');
+        const errorText = await response.text();
+        console.error('Failed to delete comment:', errorText);
+        alert(`Failed to delete comment: ${errorText}`);
       }
     } catch (error) {
       console.error('Error deleting comment:', error);
+      alert('Error deleting comment.');
     }
   };
-
+  
   const handleAddComment = async () => {
     if (!isLoggedIn) {
       alert('You must be logged in to comment.');
       return;
     }
-
+  
     const content = document.getElementById('makeComment').value.trim();
-
+  
     if (!content) {
       alert('Comment cannot be empty!');
       return;
     }
-
+  
     try {
       const response = await fetch(`${apiUrl}/api/posts/${selectedPost.post_id}/comments`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
-        body: JSON.stringify({
-          user_id: 1, // Replace with actual user_id
-          content,
-        }),
+        body: JSON.stringify({ content }),
       });
-
+  
       if (response.ok) {
-        console.log('Comment added successfully');
+        const newComment = await response.json();
         document.getElementById('makeComment').value = '';
-        fetchComments(selectedPost.post_id);
+        setComments((prevComments) => [...prevComments, newComment]); // Add the new comment with username to the list
       } else {
         const errorText = await response.text();
-        console.error('Failed to add comment. Response:', errorText);
-        alert('Failed to add comment. Check console for details.');
+        console.error('Failed to add comment:', errorText);
+        alert(`Failed to add comment: ${errorText}`);
       }
     } catch (error) {
-      console.error('Error:', error);
+      console.error('Error adding comment:', error);
+      alert('Error adding comment.');
     }
-  };
-
+  };  
+  
   const handleCreatePost = async () => {
     if (!isLoggedIn) {
       alert('You must be logged in to post.');
       return;
     }
-
+  
     if (!postContent.trim()) {
       alert('Post content cannot be empty!');
       return;
     }
-
+  
     try {
       const response = await fetch(`${apiUrl}/api/posts`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
-        body: JSON.stringify({
-          user_id: 1, // Replace with actual user_id
-          content: postContent.trim(),
-        }),
+        body: JSON.stringify({ content: postContent.trim() }),
       });
-
+  
       if (response.ok) {
-        console.log('Post added successfully');
+        const newPost = await response.json();
         setPostContent('');
-        fetchPosts();
+        setPosts((prevPosts) => [newPost, ...prevPosts]); // Add the new post with username to the top of the list
       } else {
         const errorText = await response.text();
-        console.error('Failed to add post. Response:', errorText);
-        alert('Failed to add post. Check console for details.');
+        console.error('Failed to add post:', errorText);
+        alert(`Failed to add post: ${errorText}`);
       }
     } catch (error) {
       console.error('Error creating post:', error);
+      alert('Error creating post.');
     }
-  };
+  };  
+  
 
   useEffect(() => {
     fetchPosts();
   }, [fetchPosts]);
-  
+
   return (
     <div className="app-container">
       {/* Banner Component with Login/Profile */}
@@ -221,10 +243,10 @@ function App() {
         <div className="layout-container">
           <div className="empty-section"></div>
           <div className="posts-list">
-            {posts.map((post, index) => (
+          {posts.map((post, index) => (
               <div key={post.post_id} className="post">
                 <p>
-                  <strong>User {post.user_id}:</strong> {post.content}
+                  <strong>{post.username}:</strong> {post.content}
                 </p>
                 <small>
                   <em>
@@ -234,7 +256,12 @@ function App() {
                 </small>
                 <br />
                 <button onClick={() => handleViewPost(post)}>View Post</button>
-                <button onClick={() => handleDeletePost(post.post_id)}>Delete Post</button>
+                <button
+                  onClick={() => handleDeletePost(post.post_id)}
+                  disabled={userType !== 'admin'} // Disable if the user is not an admin
+                >
+                  Delete Post
+                </button>
                 {index !== posts.length - 1 && <hr className="post-separator" />}
               </div>
             ))}
@@ -243,7 +270,7 @@ function App() {
             <div className="post-comments-container">
               <h3>Selected Post</h3>
               <p>
-                <strong>User {selectedPost.user_id}:</strong> {selectedPost.content}
+                <strong> {selectedPost.username}:</strong> {selectedPost.content}
               </p>
               <small>
                 <em>
@@ -268,34 +295,35 @@ function App() {
                 )}
               </div>
               <div className="comments-section">
-                <h4>Comments</h4>
-                <ul>
-                  {comments.length > 0 ? (
-                    comments.map((comment, index) => (
-                      <React.Fragment key={comment.comment_id}>
-                        <li>
-                          <strong>User {comment.user_id}:</strong> {comment.content}
-                          <br />
-                          <small>
-                            {new Date(comment.created_at).toLocaleDateString()} at{' '}
-                            {new Date(comment.created_at).toLocaleTimeString()}
-                          </small>
-                          {isLoggedIn && (
-                            <button
-                              onClick={() => handleDeleteComment(comment.comment_id)}
-                            >
-                              Delete Comment
-                            </button>
-                          )}
-                        </li>
-                        {index !== comments.length - 1 && <hr className="comment-separator" />}
-                      </React.Fragment>
-                    ))
-                  ) : (
-                    <li>No comments yet.</li>
-                  )}
-                </ul>
-              </div>
+              <h4>Comments</h4>
+              <ul>
+                {comments.length > 0 ? (
+                  comments.map((comment, index) => (
+                    <React.Fragment key={comment.comment_id}>
+                      <li>
+                        <strong>{comment.username}:</strong> {comment.content}
+                        <br />
+                        <small>
+                          {new Date(comment.created_at).toLocaleDateString()} at{' '}
+                          {new Date(comment.created_at).toLocaleTimeString()}
+                        </small>
+                        {isLoggedIn && (
+                          <button
+                            onClick={() => handleDeleteComment(comment.comment_id)}
+                            disabled={userType !== 'admin'}
+                          >
+                            Delete Comment
+                          </button>
+                        )}
+                      </li>
+                      {index !== comments.length - 1 && <hr className="comment-separator" />}
+                    </React.Fragment>
+                  ))
+                ) : (
+                  <li>No comments yet.</li>
+                )}
+              </ul>
+            </div>
             </div>
           )}
         </div>

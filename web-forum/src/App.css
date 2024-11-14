@@ -275,3 +275,8 @@ button.post-button:hover {
   flex-grow: 1; /* Push text to the center of the banner */
   color: white; /* Keep message color consistent */
 }
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
