@@ -1,63 +1,204 @@
-.App {
-  text-align: center;
+/* Global styles */
+html, body {
+  margin: 0;
+  padding: 0;
+  background-color: #282c34; /* Match the main background color */
+  color: white;
+  height: 100%; /* Full height coverage */
+  overflow: hidden; /* Prevent body scrolling */
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.app-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh; /* Full viewport height */
 }
 
 .App-header {
   background-color: #282c34;
-  min-height: 100vh;
+  flex: 0 0 auto; /* Header doesn't expand */
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: end;
+  flex-direction: row; /* Horizontal layout for columns */
   font-size: calc(10px + 2vmin);
   color: white;
 }
 
-.button {
-  background-color: #04AA6D;
-  /* Green */
-  border: none;
+.layout-container {
+  display: flex;
+  flex: 1; /* Fill remaining height */
+  width: 100%;
+  height: 100%; /* Ensure full height for scrollable sections */
+  overflow: hidden; /* Prevent layout scrolling horizontally */
+}
+
+.empty-section {
+  flex: 1; /* Left 1/3 for blank space */
+  max-width: 33.33%; /* Explicitly set width */
+  background-color: #282c34;
+  border-right: 1px solid #444; /* Border to separate sections */
+}
+
+.posts-list {
+  flex: 1; /* Middle 1/3 for posts */
+  max-width: 33.33%; /* Explicit width for layout consistency */
+  overflow-y: auto; /* Enable vertical scrolling for posts */
+  background-color: #1c1f26;
+  padding: 10px;
+  border-right: 1px solid #444; /* Separate posts and comments */
+  height: calc(100vh - 50px); /* Adjust for header height (example: 50px) */
+  box-sizing: border-box; /* Include padding in height */
+}
+
+.post-comments-container {
+  flex: 1; /* Right 1/3 for selected post and comments */
+  max-width: 33.33%; /* Explicit width for layout consistency */
+  display: flex;
+  flex-direction: column; /* Stack elements vertically */
+  background-color: #1e2026;
+  padding: 16px;
+  height: calc(100vh - 50px); /* Adjust for header height (example: 50px) */
+  box-sizing: border-box; /* Include padding in height */
+  overflow-y: auto; /* Enable vertical scrolling for comments */
+}
+
+/* Add custom scrollbar styles */
+.posts-list::-webkit-scrollbar,
+.post-comments-container::-webkit-scrollbar {
+  width: 8px; /* Scrollbar width */
+}
+
+.posts-list::-webkit-scrollbar-thumb,
+.post-comments-container::-webkit-scrollbar-thumb {
+  background-color: white; /* Thumb color */
+  border-radius: 4px; /* Rounded corners */
+}
+
+.posts-list::-webkit-scrollbar-track,
+.post-comments-container::-webkit-scrollbar-track {
+  background-color: #1c1f26; /* Track background */
+  border-radius: 4px; /* Rounded corners */
+}
+
+/* Add fallback for Firefox using scrollbar-color */
+.posts-list,
+.post-comments-container {
+  scrollbar-color: white #1c1f26; /* Thumb and track colors */
+  scrollbar-width: thin; /* Narrow scrollbar */
+}
+
+.add-comment-section {
+  margin-top: 15px; /* Space below the selected post */
+  display: flex;
+  flex-direction: column; /* Stack text box and button */
+  gap: 10px; /* Spacing between input and button */
+}
+
+textarea.comment-textbox {
+  width: 100%; /* Full width within container */
+  font-family: 'Arial', sans-serif;
+  font-size: 16px;
+  padding: 15px;
+  height: 60px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  resize: none; /* Disable resizing */
+  background-color: #1c1f26;
   color: white;
-  padding: 15px 32px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 20px;
+  box-sizing: border-box; /* Ensure proper sizing */
+}
+
+textarea.comment-textbox:focus {
+  outline: none;
+  border-color: #04AA6D; /* Highlight border on focus */
+}
+
+button.comment-button {
+  width: 100%; /* Full width for consistency */
+  background-color: #04AA6D; /* Match button background color */
+  color: white; /* Text color */
+  padding: 10px 15px;
+  font-size: 16px;
   font-weight: bold;
+  border: none; /* Remove borders */
+  border-radius: 5px; /* Match border radius */
+  cursor: pointer;
 }
 
-.button:hover {
-  background-color: #075d3d;
-  transform: 0.7s;
+button.comment-button:hover {
+  background-color: #075d3d; /* Change hover color */
+  transform: scale(1.05); /* Slight scaling on hover */
 }
 
-.Make-post {
-  background-color: #6796ab;
-  position: absolute;
-  flex-direction: column;
+.comments-section {
+  flex: 1; /* Expand to fill remaining space */
+  overflow-y: auto; /* Enable vertical scrolling for comments */
+  margin-top: 10px; /* Space above comments list */
+  box-sizing: border-box; /* Include padding in height */
+}
+
+.comments-section ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.comments-section ul li {
+  margin-bottom: 10px; /* Spacing between comments */
+}
+
+.make-post {
+  position: fixed;
   bottom: 0;
   left: 0;
-  align-items: center;
-  justify-content: end;
+  width: 29.5%; /* Match the 1/3 width for consistency */
+  padding: 20px;
+  display: flex;
   flex-direction: column;
-  font-size: calc(10px + 2vmin);
+  gap: 10px;
+  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.2);
+  border-right: 1px solid #444;
+  background-color: #282c34; /* Ensure consistent background color */
 }
 
-.App-link {
-  color: #61dafb;
-}
-
-.main-textbox {
+textarea.main-textbox {
+  width: 90%;
   font-family: 'Arial', sans-serif;
+  font-size: 16px;
+  padding: 15px;
+  height: 60px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  resize: none;
+  box-sizing: border-box; /* Ensure proper sizing */
+}
+
+button.post-button {
+  width: 90%;
+  background-color: #04AA6D;
+  color: white;
+  padding: 10px 15px;
+  font-size: 16px;
+  font-weight: bold;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button.post-button:hover {
+  background-color: #075d3d;
+  transform: scale(1.05);
+}
+
+.post-separator {
+  border: none;
+  height: 1px;
+  background-color: #444; /* Match the theme color */
+  margin: 10px 0; /* Add spacing around the separator */
+}
+
+.comment-separator {
+  border: none;
+  height: 1px;
+  background-color: #444; /* Match the theme color */
+  margin: 10px 0; /* Add spacing around the separator */
 }
