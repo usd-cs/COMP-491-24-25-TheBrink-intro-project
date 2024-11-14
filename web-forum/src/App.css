@@ -202,3 +202,18 @@ button.post-button:hover {
   background-color: #444; /* Match the theme color */
   margin: 10px 0; /* Add spacing around the separator */
 }
+
+.Banner {
+  background-color: #288548; /* Set background color to white */
+  color: #ffffff;            /* Text color to black for contrast */
+  padding: 10px;             /* Increase padding for more space */
+  display: flex;             /* Align items in a row */
+  align-items: center;       /* Center items vertically */
+  max-height:140px; /* Maximum*/
+  font-family: 'Arial', sans-serif;
+  font-size: 16px;
+  border-radius: 5px;
+  resize: none;
+  box-sizing: border-box; /* Ensure proper sizing */
+ }
+ 

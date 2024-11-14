@@ -1,14 +1,35 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import './App.css';
+import Banner from'./Banner.js';
+
 
 function App() {
   const [posts, setPosts] = useState([]);
   const [selectedPost, setSelectedPost] = useState(null);
   const [comments, setComments] = useState([]);
   const [postContent, setPostContent] = useState('');
+  //Login Constants
+  const [isLoggedIn, setIsLoggedIn] = useState(false); // Track login status
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+
 
   const apiUrl = process.env.REACT_APP_API_URL;
 
+  //Simulate API call for login
+const login = async () => {
+  if (username === 'user' && password === 'password') {
+    setIsLoggedIn(true); // Simulate successful login
+  } else {
+    alert('Invalid credentials');
+  }
+ };
+ 
+ const logout = () => {
+  setIsLoggedIn(false);
+  setUsername('');
+  setPassword('');
+};
   const fetchPosts = useCallback(async () => {
     try {
       const response = await fetch(`${apiUrl}/api/posts`);
@@ -49,6 +70,14 @@ function App() {
       alert('Comment cannot be empty!');
       return;
     }
+
+    //Logout function
+    const logout = () => {
+      setIsLoggedIn(false);
+      setUsername('');
+      setPassword('');
+     };
+     
 
     try {
       const response = await fetch(`${apiUrl}/api/posts/${selectedPost.post_id}/comments`, {
@@ -114,6 +143,18 @@ function App() {
 
   return (
     <div className="app-container">
+        {/* Banner Component with Login/Profile */}
+      <Banner
+        message="Welcome to The Brink!"
+        isLoggedIn={isLoggedIn}
+        username={username}
+        setUsername={setUsername}
+        password={password}
+        setPassword={setPassword}
+        login={login}
+        logout={logout} // Ensure logout is passed here
+      />
+
       <header className="App-header">
         <div className="layout-container">
           <div className="empty-section"></div>
