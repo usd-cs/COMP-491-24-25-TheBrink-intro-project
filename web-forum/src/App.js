@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import MainTextbox from './MainTextbox';
 import PostButton from './PostButton';
 import PostList from './PostList';
+import Banner from './Banner';
+
 
 function App() {
   const [posts, setPosts] = useState([]);
@@ -33,6 +35,16 @@ const login = async () => {
     }
   };
 
+  // Define logout function
+const logout = () => {
+  setIsLoggedIn(false);
+  setUsername('');
+  setPassword('');
+};
+
+
+
+
   // Fetch posts when component mounts
   useEffect(() => {
     fetchPosts();
@@ -41,18 +53,20 @@ const login = async () => {
   return (
     <div>
     {/* Banner Component with Login/Profile */}
-    <Banner 
-      message="Welcome to The Brink!" 
-      buttonText="Click Me" 
-      onButtonClick={() => alert('Button clicked!')}
-      isLoggedIn={isLoggedIn} 
-      username={username} 
-      setUsername={setUsername}
-      password={password} 
-      setPassword={setPassword}
-      login={login} 
-      logout={logout} 
-    />
+    // Pass logout to Banner
+  <Banner 
+    message="Welcome to The Brink!" 
+    buttonText="Click Me" 
+    onButtonClick={() => alert('Button clicked!')}
+    isLoggedIn={isLoggedIn} 
+    username={username} 
+    setUsername={setUsername}
+    password={password} 
+    setPassword={setPassword}
+    login={login} 
+    logout={logout} // Ensure logout is passed here
+  />
+    
 
     {/* Main App Content */}
     <header className="App-header">

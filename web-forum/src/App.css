@@ -62,8 +62,12 @@
   font-family: 'Arial', sans-serif;
 }
 
-.banner {
-  background-color: #f0f0f0;
-  padding: 10px;
-  text-align: center;
+.Banner {
+  background-color: #ffffff; /* Set background color to white */
+  color: #000000;            /* Text color to black for contrast */
+  padding: 20px;             /* Increase padding for more space */
+  display: flex;             /* Align items in a row */
+  align-items: center;       /* Center items vertically */
+  border-bottom: 1px solid #ddd; /* Optional: adds a subtle divider */
 }
+
