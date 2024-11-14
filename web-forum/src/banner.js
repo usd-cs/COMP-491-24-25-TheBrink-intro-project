@@ -1,9 +1,9 @@
 import React from 'react';
+import './App.css'; // Make sure to import the CSS file
 
 const Banner = ({ message, buttonText, onButtonClick, isLoggedIn, username, setUsername, password, setPassword, login, logout }) => {
   return (
-    <div className="banner" style={{ display: 'flex', alignItems: 'center', backgroundColor: '#282c34', color: 'white', padding: '20px' }}>
-      
+    <div className="Banner">
       {/* Login/Profile Section on the left */}
       <div style={{ marginRight: 'auto', display: 'flex', alignItems: 'center' }}>
         {!isLoggedIn ? (
