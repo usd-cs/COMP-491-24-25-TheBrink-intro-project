@@ -188,3 +188,17 @@ button.post-button:hover {
   background-color: #075d3d;
   transform: scale(1.05);
 }
+
+.post-separator {
+  border: none;
+  height: 1px;
+  background-color: #444; /* Match the theme color */
+  margin: 10px 0; /* Add spacing around the separator */
+}
+
+.comment-separator {
+  border: none;
+  height: 1px;
+  background-color: #444; /* Match the theme color */
+  margin: 10px 0; /* Add spacing around the separator */
+}

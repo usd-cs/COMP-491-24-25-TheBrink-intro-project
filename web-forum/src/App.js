@@ -118,7 +118,7 @@ function App() {
         <div className="layout-container">
           <div className="empty-section"></div>
           <div className="posts-list">
-            {posts.map((post) => (
+            {posts.map((post, index) => (
               <div key={post.post_id} className="post">
                 <p>
                   <strong>User {post.user_id}:</strong> {post.content}
@@ -131,6 +131,8 @@ function App() {
                 </small>
                 <br />
                 <button onClick={() => handleViewPost(post)}>View Post</button>
+                {/* Add an <hr> line below each post except the last one */}
+                {index !== posts.length - 1 && <hr className="post-separator" />}
               </div>
             ))}
           </div>
@@ -157,11 +159,12 @@ function App() {
                 </button>
               </div>
               <div className="comments-section">
-                <h4>Comments</h4>
-                <ul>
-                  {comments.length > 0 ? (
-                    comments.map((comment) => (
-                      <li key={comment.comment_id}>
+              <h4>Comments</h4>
+              <ul>
+                {comments.length > 0 ? (
+                  comments.map((comment, index) => (
+                    <React.Fragment key={comment.comment_id}>
+                      <li>
                         <strong>User {comment.user_id}:</strong> {comment.content}
                         <br />
                         <small>
@@ -169,12 +172,15 @@ function App() {
                           {new Date(comment.created_at).toLocaleTimeString()}
                         </small>
                       </li>
-                    ))
-                  ) : (
-                    <li>No comments yet.</li>
-                  )}
-                </ul>
-              </div>
+                      {/* Add an <hr> line below each comment except the last one */}
+                      {index !== comments.length - 1 && <hr className="comment-separator" />}
+                    </React.Fragment>
+                  ))
+                ) : (
+                  <li>No comments yet.</li>
+                )}
+              </ul>
+            </div>
             </div>
           )}
         </div>
