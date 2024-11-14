@@ -10,21 +10,45 @@ function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false); // Track login status
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [userType, setUserType] = useState(''); // Track user type: "guest", "user", or "admin"
 
   const apiUrl = process.env.REACT_APP_API_URL;
 
   const login = async () => {
-    if (username === 'user' && password === 'password') {
-      setIsLoggedIn(true); // Simulate successful login
-    } else {
-      alert('Invalid credentials');
+    try {
+      const response = await fetch('http://localhost:5001/api/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, password }),
+      });
+  
+      const data = await response.json();
+  
+      if (!data.success) {
+        alert(data.message || 'Login failed.');
+        return;
+      }
+  
+      setIsLoggedIn(true);
+      setUsername(data.username);
+      setUserType(data.userType); // Store userType for permissions
+    } catch (error) {
+      console.error('Error during login:', error);
+      alert('An error occurred during login. Please try again.');
     }
   };
 
   const logout = () => {
+    if (!isLoggedIn) {
+      alert('No one is logged in. Please log in first.');
+      return;
+    }
     setIsLoggedIn(false);
     setUsername('');
     setPassword('');
+    setUserType(''); // Reset user type
   };
 
   const fetchPosts = useCallback(async () => {
@@ -61,8 +85,13 @@ function App() {
   };
 
   const handleDeletePost = async (postId) => {
+    if (userType !== 'admin') {
+      alert('Only admins can delete posts.');
+      return;
+    }
+
     try {
-      const response = await fetch(`${apiUrl}/api/posts/${postId}`, {
+      const response = await fetch(`http://localhost:5001/api/posts/${postId}`, {
         method: 'DELETE',
       });
 
@@ -82,7 +111,7 @@ function App() {
       const response = await fetch(`${apiUrl}/api/comments/${commentId}`, {
         method: 'DELETE',
       });
-  
+
       if (response.ok) {
         console.log('Comment deleted successfully');
         fetchComments(selectedPost.post_id); // Refresh the comments list
@@ -93,9 +122,13 @@ function App() {
       console.error('Error deleting comment:', error);
     }
   };
-  
 
   const handleAddComment = async () => {
+    if (!isLoggedIn) {
+      alert('You must be logged in to comment.');
+      return;
+    }
+
     const content = document.getElementById('makeComment').value.trim();
 
     if (!content) {
@@ -110,7 +143,7 @@ function App() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          user_id: 1,
+          user_id: 1, // Replace with actual user_id
           content,
         }),
       });
@@ -130,6 +163,11 @@ function App() {
   };
 
   const handleCreatePost = async () => {
+    if (!isLoggedIn) {
+      alert('You must be logged in to post.');
+      return;
+    }
+
     if (!postContent.trim()) {
       alert('Post content cannot be empty!');
       return;
@@ -142,7 +180,7 @@ function App() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          user_id: 1,
+          user_id: 1, // Replace with actual user_id
           content: postContent.trim(),
         }),
       });
@@ -164,7 +202,7 @@ function App() {
   useEffect(() => {
     fetchPosts();
   }, [fetchPosts]);
-
+  
   return (
     <div className="app-container">
       {/* Banner Component with Login/Profile */}
@@ -214,55 +252,70 @@ function App() {
                 </em>
               </small>
               <div className="add-comment-section">
-                <textarea
-                  id="makeComment"
-                  placeholder="Add a comment..."
-                  className="comment-textbox"
-                ></textarea>
-                <button className="comment-button" onClick={handleAddComment}>
-                  Comment
-                </button>
+                {isLoggedIn ? (
+                  <>
+                    <textarea
+                      id="makeComment"
+                      placeholder="Add a comment..."
+                      className="comment-textbox"
+                    ></textarea>
+                    <button className="comment-button" onClick={handleAddComment}>
+                      Comment
+                    </button>
+                  </>
+                ) : (
+                  <p style={{ color: 'red' }}>Login required to add comments.</p>
+                )}
               </div>
               <div className="comments-section">
-              <h4>Comments</h4>
-              <ul>
-                {comments.length > 0 ? (
-                  comments.map((comment, index) => (
-                    <React.Fragment key={comment.comment_id}>
-                      <li>
-                        <strong>User {comment.user_id}:</strong> {comment.content}
-                        <br />
-                        <small>
-                          {new Date(comment.created_at).toLocaleDateString()} at{' '}
-                          {new Date(comment.created_at).toLocaleTimeString()}
-                        </small>
-                        {/* Add Delete Button */}
-                        <button onClick={() => handleDeleteComment(comment.comment_id)}>
-                          Delete Comment
-                        </button>
-                      </li>
-                      {index !== comments.length - 1 && <hr className="comment-separator" />}
-                    </React.Fragment>
-                  ))
-                ) : (
-                  <li>No comments yet.</li>
-                )}
-              </ul>
-            </div>
+                <h4>Comments</h4>
+                <ul>
+                  {comments.length > 0 ? (
+                    comments.map((comment, index) => (
+                      <React.Fragment key={comment.comment_id}>
+                        <li>
+                          <strong>User {comment.user_id}:</strong> {comment.content}
+                          <br />
+                          <small>
+                            {new Date(comment.created_at).toLocaleDateString()} at{' '}
+                            {new Date(comment.created_at).toLocaleTimeString()}
+                          </small>
+                          {isLoggedIn && (
+                            <button
+                              onClick={() => handleDeleteComment(comment.comment_id)}
+                            >
+                              Delete Comment
+                            </button>
+                          )}
+                        </li>
+                        {index !== comments.length - 1 && <hr className="comment-separator" />}
+                      </React.Fragment>
+                    ))
+                  ) : (
+                    <li>No comments yet.</li>
+                  )}
+                </ul>
+              </div>
             </div>
           )}
         </div>
       </header>
       <div className="make-post">
-        <textarea
-          className="main-textbox"
-          placeholder="Write a new post..."
-          value={postContent}
-          onChange={(e) => setPostContent(e.target.value)}
-        ></textarea>
-        <button className="post-button" onClick={handleCreatePost}>
-          Post
-        </button>
+        {isLoggedIn ? (
+          <>
+            <textarea
+              className="main-textbox"
+              placeholder="Write a new post..."
+              value={postContent}
+              onChange={(e) => setPostContent(e.target.value)}
+            ></textarea>
+            <button className="post-button" onClick={handleCreatePost}>
+              Post
+            </button>
+          </>
+        ) : (
+          <p style={{ color: 'red' }}>Login required to post.</p>
+        )}
       </div>
     </div>
   );

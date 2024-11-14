@@ -204,16 +204,74 @@ button.post-button:hover {
 }
 
 .Banner {
-  background-color: #288548; /* Set background color to white */
-  color: #ffffff;            /* Text color to black for contrast */
-  padding: 10px;             /* Increase padding for more space */
-  display: flex;             /* Align items in a row */
-  align-items: center;       /* Center items vertically */
-  max-height:140px; /* Maximum*/
-  font-family: 'Arial', sans-serif;
-  font-size: 16px;
-  border-radius: 5px;
-  resize: none;
+  background-color: #288548; /* Match consistent theme */
+  color: #ffffff; /* Ensure text contrast */
+  padding: 10px 20px; /* Add padding for spacing */
+  display: flex; /* Use flexbox for layout */
+  justify-content: space-between; /* Space out elements */
+  align-items: center; /* Center items vertically */
+  font-family: 'Arial', sans-serif; /* Set font for consistency */
+  font-size: 16px; /* Default font size */
+  border-bottom: 1px solid #444; /* Subtle border at the bottom */
+  border-radius: 5px; /* Slightly rounded corners */
   box-sizing: border-box; /* Ensure proper sizing */
- }
- 
+}
+
+.Banner h3 {
+  margin: 0; /* Remove default margin for headings */
+  font-size: 18px; /* Slightly larger heading size */
+}
+
+.Banner input {
+  width: 200px; /* Fixed width for input fields */
+  margin: 5px 0; /* Space between inputs */
+  padding: 8px; /* Add padding for usability */
+  border: 1px solid #ccc; /* Subtle border */
+  border-radius: 4px; /* Rounded corners for inputs */
+  background-color: #f0f0f0; /* Light background for inputs */
+  color: #000; /* Dark text for contrast */
+}
+
+.Banner input:focus {
+  outline: none; /* Remove default focus outline */
+  border-color: #04AA6D; /* Highlight border on focus */
+  box-shadow: 0 0 5px rgba(4, 170, 109, 0.8); /* Subtle glow effect */
+}
+
+.Banner button {
+  padding: 8px 12px; /* Adjust padding for buttons */
+  background-color: #04AA6D; /* Consistent green theme */
+  color: white; /* Ensure button text is readable */
+  border: none; /* Remove default border */
+  border-radius: 4px; /* Rounded corners for buttons */
+  cursor: pointer; /* Indicate button interactivity */
+  font-weight: bold; /* Highlight button text */
+  font-size: 14px; /* Adjust font size for clarity */
+}
+
+.Banner button:hover {
+  background-color: #028A4A; /* Darken background on hover */
+  transform: scale(1.05); /* Slight zoom on hover */
+  transition: 0.2s ease-in-out; /* Smooth transition effect */
+}
+
+.Banner .login-section {
+  display: flex; /* Arrange login inputs and buttons in a row */
+  flex-direction: column; /* Stack inputs and button */
+  align-items: flex-start; /* Align elements to the left */
+  margin-right: auto; /* Push to the left */
+}
+
+.Banner .welcome-section {
+  display: flex; /* Arrange welcome text and logout button */
+  align-items: center; /* Center items vertically */
+  gap: 10px; /* Space between elements */
+}
+
+.Banner h2 {
+  margin: 0; /* Remove default margin */
+  font-size: 20px; /* Larger text for the banner message */
+  text-align: center; /* Center text */
+  flex-grow: 1; /* Push text to the center of the banner */
+  color: white; /* Keep message color consistent */
+}
