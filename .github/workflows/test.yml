@@ -19,8 +19,14 @@ jobs:
         with:
           node-version: '16'
 
+      - name: Navigate to web-forum directory
+        working-directory: ./web-forum
+        run: pwd
+
       - name: Install dependencies
+        working-directory: ./web-forum
         run: npm install
 
       - name: Run tests
+        working-directory: ./web-forum
         run: npm test
